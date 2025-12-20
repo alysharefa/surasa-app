@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Models\Kuliner;
 use App\Models\Recipe;
 use Illuminate\Http\RedirectResponse;
@@ -271,5 +272,11 @@ class RecipeController extends Controller
 
         return view('recipes.my-recipes', compact('recipes'));
     }
+=======
+use Illuminate\Http\Request;
+
+class RecipeController extends Controller
+{
+>>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
     //
 }

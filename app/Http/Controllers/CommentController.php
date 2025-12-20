@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Models\Comment;
 use App\Models\Kuliner;
 use App\Models\Rating;
@@ -98,5 +99,11 @@ class CommentController extends Controller
 
         return back()->with('success', 'Komentar berhasil dihapus');
     }
+=======
+use Illuminate\Http\Request;
+
+class CommentController extends Controller
+{
+>>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
     //
 }

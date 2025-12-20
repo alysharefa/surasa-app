@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Models\Kuliner;
 use App\Models\Rating;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+=======
+>>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
 use Illuminate\Http\Request;
 
 class RatingController extends Controller
 {
+<<<<<<< HEAD
        /**
      * Store or update a rating
      */
@@ -64,5 +68,7 @@ class RatingController extends Controller
 
         return back()->with('success', 'Rating berhasil dihapus');
     }
+=======
+>>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
     //
 }

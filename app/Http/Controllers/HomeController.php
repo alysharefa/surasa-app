@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\Category;
 use App\Models\Kuliner;
 use App\Models\Recipe;
@@ -11,7 +10,7 @@ use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-        /**
+    /**
      * Display the homepage with recommendations
      */
     public function index(): View
@@ -102,11 +101,4 @@ class HomeController extends Controller
 
         return view('search', compact('kuliners', 'categories', 'query', 'categoryId', 'sort'));
     }
-=======
-use Illuminate\Http\Request;
-
-class HomeController extends Controller
-{
->>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
-    //
 }

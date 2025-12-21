@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class BookmarkController extends Controller
@@ -13,7 +14,10 @@ class BookmarkController extends Controller
      */
     public function index(): View
     {
-        $recipes = auth()->user()->bookmarks()
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $recipes = $user->bookmarks()
             ->with(['user', 'kuliner']) // Eager load user (author) and kuliner
             ->latest('bookmarks.created_at') // Sort by when it was bookmarked
             ->paginate(12);
@@ -26,7 +30,8 @@ class BookmarkController extends Controller
      */
     public function toggle(Recipe $recipe)
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
         
         $user->bookmarks()->toggle($recipe->id);
         

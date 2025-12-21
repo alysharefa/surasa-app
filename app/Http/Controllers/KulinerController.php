@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Kuliner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class KulinerController extends Controller
@@ -66,9 +67,9 @@ class KulinerController extends Controller
 
         // Get user's rating if logged in
         $userRating = null;
-        if (auth()->check()) {
+        if (Auth::check()) {
             $userRating = $kuliner->ratings()
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->first();
         }
 
@@ -97,7 +98,7 @@ class KulinerController extends Controller
             ];
         }
         
-        $isLiked = $kuliner->isLikedBy(auth()->user());
+        $isLiked = $kuliner->isLikedBy(Auth::user());
 
         return view('kuliners.show', compact('kuliner', 'userRating', 'relatedKuliners', 'ratingDistribution', 'isLiked'));
     }

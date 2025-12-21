@@ -6,6 +6,8 @@ use App\Models\Kuliner;
 use App\Models\Recipe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -42,12 +44,12 @@ class RecipeController extends Controller
         $imageFile = $request->file('image');
         
         // Debug logging
-        \Log::info('=== RECIPE STORE DEBUG ===');
-        \Log::info('Has image file (hasFile): ' . ($request->hasFile('image') ? 'YES' : 'NO'));
-        \Log::info('Image file object exists: ' . ($imageFile ? 'YES' : 'NO'));
+        Log::info('=== RECIPE STORE DEBUG ===');
+        Log::info('Has image file (hasFile): ' . ($request->hasFile('image') ? 'YES' : 'NO'));
+        Log::info('Image file object exists: ' . ($imageFile ? 'YES' : 'NO'));
         
         if ($imageFile) {
-            \Log::info('Image details: ' . json_encode([
+            Log::info('Image details: ' . json_encode([
                 'original_name' => $imageFile->getClientOriginalName(),
                 'size' => $imageFile->getSize(),
                 'mime' => $imageFile->getMimeType(),
@@ -83,12 +85,12 @@ class RecipeController extends Controller
         if ($imageFile && $imageFile->isValid()) {
             try {
                 $imagePath = $imageFile->store('recipes', 'public');
-                \Log::info('Image uploaded successfully: ' . $imagePath);
+                Log::info('Image uploaded successfully: ' . $imagePath);
             } catch (\Exception $e) {
-                \Log::error('Recipe image upload failed: ' . $e->getMessage());
+                Log::error('Recipe image upload failed: ' . $e->getMessage());
             }
         } elseif ($imageFile) {
-            \Log::warning('Image file exists but is invalid. Error code: ' . $imageFile->getError() . ' - ' . $imageFile->getErrorMessage());
+            Log::warning('Image file exists but is invalid. Error code: ' . $imageFile->getError() . ' - ' . $imageFile->getErrorMessage());
         }
 
         // Filter out empty ingredients and steps
@@ -96,7 +98,7 @@ class RecipeController extends Controller
         $steps = array_filter($request->steps, fn($item) => !empty(trim($item)));
 
         $recipe = Recipe::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'kuliner_id' => $request->kuliner_id,
             'title' => $request->title,
             'description' => $request->description,
@@ -139,11 +141,12 @@ class RecipeController extends Controller
             ->take(4)
             ->get();
 
-        $isBookmarked = auth()->check() 
-            ? auth()->user()->bookmarks()->where('recipe_id', $recipe->id)->exists() 
-            : false;
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        $isBookmarked = $user ? $user->bookmarks()->where('recipe_id', $recipe->id)->exists() : false;
             
-        $isLiked = $recipe->isLikedBy(auth()->user());
+        $isLiked = $recipe->isLikedBy($user);
 
         return view('recipes.show', compact('recipe', 'relatedRecipes', 'isBookmarked', 'isLiked'));
     }
@@ -154,7 +157,7 @@ class RecipeController extends Controller
     public function edit(Recipe $recipe): View
     {
         // Check ownership
-        if ($recipe->user_id !== auth()->id()) {
+        if ($recipe->user_id !== Auth::id()) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit resep ini');
         }
 
@@ -168,7 +171,7 @@ class RecipeController extends Controller
     public function update(Request $request, Recipe $recipe): RedirectResponse
     {
         // Check ownership
-        if ($recipe->user_id !== auth()->id()) {
+        if ($recipe->user_id !== Auth::id()) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit resep ini');
         }
 
@@ -189,7 +192,7 @@ class RecipeController extends Controller
 
         // Only validate image if one was uploaded
         if ($request->hasFile('image')) {
-            $rules['image'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:5120'; // 5MB max
+            $rules['image'] = 'image|mimes:jpeg,png,jpg,gif,webp|max:2048'; // 2MB max
         }
 
         $request->validate($rules);
@@ -226,7 +229,7 @@ class RecipeController extends Controller
             try {
                 $data['image'] = $request->file('image')->store('recipes', 'public');
             } catch (\Exception $e) {
-                \Log::error('Recipe image upload failed: ' . $e->getMessage());
+                Log::error('Recipe image upload failed: ' . $e->getMessage());
             }
         }
 
@@ -242,8 +245,11 @@ class RecipeController extends Controller
      */
     public function destroy(Recipe $recipe): RedirectResponse
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         // Check ownership
-        if ($recipe->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        if ($recipe->user_id !== $user->id && !$user->isAdmin()) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus resep ini');
         }
 
@@ -264,7 +270,7 @@ class RecipeController extends Controller
      */
     public function myRecipes(): View
     {
-        $recipes = Recipe::where('user_id', auth()->id())
+        $recipes = Recipe::where('user_id', Auth::id())
             ->with('kuliner')
             ->latest()
             ->paginate(12);

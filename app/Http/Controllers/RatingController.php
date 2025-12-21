@@ -7,6 +7,7 @@ use App\Models\Rating;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
@@ -21,7 +22,7 @@ class RatingController extends Controller
 
         $rating = Rating::updateOrCreate(
             [
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'kuliner_id' => $kuliner->id,
             ],
             [
@@ -46,7 +47,7 @@ class RatingController extends Controller
      */
     public function destroy(Kuliner $kuliner): RedirectResponse|JsonResponse
     {
-        $rating = Rating::where('user_id', auth()->id())
+        $rating = Rating::where('user_id', Auth::id())
             ->where('kuliner_id', $kuliner->id)
             ->first();
 

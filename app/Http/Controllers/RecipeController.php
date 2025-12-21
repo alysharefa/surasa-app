@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\Kuliner;
 use App\Models\Recipe;
 use Illuminate\Http\RedirectResponse;
@@ -12,7 +11,7 @@ use Illuminate\View\View;
 
 class RecipeController extends Controller
 {
-       /**
+    /**
      * Display list of all recipes (timeline)
      */
     public function index(Request $request): View
@@ -272,11 +271,4 @@ class RecipeController extends Controller
 
         return view('recipes.my-recipes', compact('recipes'));
     }
-=======
-use Illuminate\Http\Request;
-
-class RecipeController extends Controller
-{
->>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
-    //
 }

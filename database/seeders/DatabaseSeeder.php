@@ -16,22 +16,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-                // Create Admin User
-                User::create([
-                    'name' => 'Administrator',
-                    'email' => 'admin@surasa.id',
-                    'password' => Hash::make('password'),
-                    'role' => 'admin',
-                ]);
-        
-                // Create Test User
-                User::create([
-                    'name' => 'Test User',
-                    'email' => 'user@surasa.id',
-                    'password' => Hash::make('password'),
-                    'role' => 'user',
-                ]);
-        
+                        // Create Admin User
+                        User::firstOrCreate(
+                            ['email' => 'admin@surasa.id'],
+                            [
+                                'name' => 'Administrator',
+                                'password' => Hash::make('password'),
+                                'role' => 'admin',
+                            ]
+                        );
+                
+                        // Create Test User
+                        User::firstOrCreate(
+                            ['email' => 'user@surasa.id'],
+                            [
+                                'name' => 'Test User',
+                                'password' => Hash::make('password'),
+                                'role' => 'user',
+                            ]
+                        );        
                 // Seed Categories and Kuliners
                 $this->call([
                     CategorySeeder::class,

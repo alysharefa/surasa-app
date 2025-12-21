@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\Category;
 use App\Models\Kuliner;
 use Illuminate\Http\Request;
@@ -10,7 +9,7 @@ use Illuminate\View\View;
 
 class KulinerController extends Controller
 {
-        /**
+    /**
      * Display list of all kuliners
      */
     public function index(Request $request): View
@@ -117,11 +116,4 @@ class KulinerController extends Controller
 
         return view('kuliners.category', compact('category', 'kuliners'));
     }
-=======
-use Illuminate\Http\Request;
-
-class KulinerController extends Controller
-{
->>>>>>> 3d0d46a16636d146929ae16ec46d24ba4c830240
-    //
 }

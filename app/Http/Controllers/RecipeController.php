@@ -18,10 +18,33 @@ class RecipeController extends Controller
      */
     public function index(Request $request): View
     {
+        $difficulty = $request->input('difficulty');
+        $search = $request->input('q');
+        $sort = $request->input('sort', 'newest');
+
         $recipes = Recipe::approved()
             ->with(['user', 'kuliner'])
-            ->latest()
-            ->paginate(12);
+            ->when($difficulty, function ($query) use ($difficulty) {
+                $query->where('difficulty', $difficulty);
+            })
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%")
+                      ->orWhereHas('user', function ($uq) use ($search) {
+                          $uq->where('name', 'like', "%{$search}%");
+                      });
+                });
+            })
+            ->when($sort === 'popular', function ($query) {
+                $query->orderBy('views', 'desc');
+            })
+            ->when($sort === 'quick', function ($query) {
+                $query->orderBy('cooking_time', 'asc');
+            })
+            ->latest() // Default sort
+            ->paginate(12)
+            ->withQueryString();
 
         return view('recipes.index', compact('recipes'));
     }

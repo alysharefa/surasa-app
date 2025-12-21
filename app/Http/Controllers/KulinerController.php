@@ -88,7 +88,8 @@ class KulinerController extends Controller
             ->toArray();
             
         $ratingDistribution = [];
-        $totalRatings = $kuliner->total_reviews > 0 ? $kuliner->total_reviews : 1; // Avoid division by zero
+        $totalRatings = array_sum($ratingCounts);
+        $totalRatings = $totalRatings > 0 ? $totalRatings : 1; // Avoid division by zero
         
         for ($i = 5; $i >= 1; $i--) {
             $count = $ratingCounts[$i] ?? 0;

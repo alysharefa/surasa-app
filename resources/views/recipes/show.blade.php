@@ -337,38 +337,107 @@
         </main>
     </div>
     <!-- Cook Mode Modal -->
-    <div id="cookModeModal" class="fixed inset-0 z-50 bg-background-light dark:bg-background-dark hidden flex flex-col transition-opacity duration-300">
+    <div id="cookModeModal" class="fixed inset-0 z-[100] bg-background-light dark:bg-background-dark hidden flex flex-col transition-opacity duration-300" x-data="{ showIngredients: false, timer: 0, timerRunning: false, timerInterval: null, fontSize: 1 }">
         <!-- Cook Mode Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
-            <h2 class="font-bold text-lg text-text-main-light dark:text-text-main-dark truncate pr-4">{{ $recipe->title }}</h2>
-            <button onclick="closeCookMode()" class="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors">
-                <span class="material-symbols-outlined text-text-main-light dark:text-text-main-dark">close</span>
+        <div class="flex flex-wrap items-center justify-between px-4 md:px-6 py-4 border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark z-20 shadow-sm relative gap-4">
+            <div class="flex items-center gap-4 flex-1">
+                <button @click="showIngredients = !showIngredients" class="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-colors relative group shrink-0 border border-transparent hover:border-border-light dark:hover:border-border-dark" title="Lihat Bahan">
+                    <span class="material-symbols-outlined text-text-main-light dark:text-text-main-dark">grocery</span>
+                    <span class="absolute top-0 right-0 size-2 bg-primary rounded-full" x-show="!showIngredients"></span>
+                </button>
+                <div class="h-6 w-px bg-border-light dark:border-border-dark hidden sm:block"></div>
+                <!-- Timer Control -->
+                <div class="flex items-center gap-2 bg-background-light dark:bg-background-dark rounded-lg px-3 py-1.5 border border-border-light dark:border-border-dark shadow-inner">
+                    <span class="font-mono font-bold text-lg w-16 text-center text-text-main-light dark:text-text-main-dark" x-text="new Date(timer * 1000).toISOString().substr(14, 5)">00:00</span>
+                    <button @click="toggleTimer()" class="p-1 rounded hover:bg-surface-light dark:hover:bg-surface-dark text-primary-dark transition-colors">
+                        <span class="material-symbols-outlined text-[24px]" x-text="timerRunning ? 'pause' : 'play_arrow'">play_arrow</span>
+                    </button>
+                    <button @click="resetTimer()" class="p-1 rounded hover:bg-surface-light dark:hover:bg-surface-dark text-red-500 transition-colors" title="Reset">
+                        <span class="material-symbols-outlined text-[20px]">restart_alt</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Font Size Control (Hidden on very small screens) -->
+            <div class="hidden sm:flex items-center gap-2 bg-background-light dark:bg-background-dark rounded-full px-3 py-1 border border-border-light dark:border-border-dark">
+                <button @click="fontSize = Math.max(0.8, fontSize - 0.1)" class="text-xs font-bold px-2 hover:text-primary text-text-main-light dark:text-text-main-dark">A-</button>
+                <span class="text-xs text-text-sec-light dark:text-text-sec-dark">|</span>
+                <button @click="fontSize = Math.min(1.5, fontSize + 0.1)" class="text-lg font-bold px-2 hover:text-primary text-text-main-light dark:text-text-main-dark">A+</button>
+            </div>
+
+            <button onclick="closeCookMode()" class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-text-sec-light hover:text-red-500 transition-colors shrink-0">
+                <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
-        <!-- Cook Mode Body -->
-        <div class="flex-1 overflow-y-auto p-6 md:p-12 flex flex-col justify-center items-center text-center relative">
-            <div id="cookStepContent" class="max-w-4xl mx-auto w-full">
-                <span class="text-primary font-bold tracking-widest uppercase mb-4 block">Langkah <span id="currentStepDisplay">1</span></span>
-                <p id="stepText" class="text-3xl md:text-5xl font-black text-text-main-light dark:text-text-main-dark leading-tight transition-all"></p>
+        <div class="flex-1 flex overflow-hidden relative">
+            <!-- Ingredients Sidebar (Collapsible) -->
+            <div x-show="showIngredients" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="-translate-x-full opacity-0"
+                 x-transition:enter-end="translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="translate-x-0 opacity-100"
+                 x-transition:leave-end="-translate-x-full opacity-0"
+                 class="w-full sm:w-80 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark overflow-y-auto p-6 shadow-xl absolute inset-y-0 left-0 z-30 lg:static lg:block lg:shadow-none"
+                 style="display: none;">
+                <h3 class="font-bold text-lg mb-4 text-text-main-light dark:text-text-main-dark flex items-center justify-between">
+                    Daftar Bahan
+                    <button @click="showIngredients = false" class="lg:hidden p-1 rounded-full hover:bg-background-light dark:hover:bg-background-dark">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </h3>
+                <div class="space-y-3">
+                    @if($recipe->ingredients)
+                        @php $ingredients = is_array($recipe->ingredients) ? $recipe->ingredients : explode("\n", $recipe->ingredients); @endphp
+                        @foreach($ingredients as $index => $ingredient)
+                            @if(trim($ingredient))
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-background-light dark:bg-background-dark hover:bg-gray-50 dark:hover:bg-neutral-800 cursor-pointer group transition-all text-sm border border-transparent hover:border-primary/20">
+                                <input type="checkbox" class="peer mt-0.5 rounded border-gray-300 text-primary focus:ring-primary bg-transparent"/>
+                                <span class="peer-checked:line-through peer-checked:text-text-sec-light dark:peer-checked:text-text-sec-dark text-text-main-light dark:text-text-main-dark font-medium">{{ trim($ingredient) }}</span>
+                            </label>
+                            @endif
+                        @endforeach
+                    @endif
+                </div>
             </div>
-            
-            <!-- Progress Bar -->
-            <div class="absolute top-0 left-0 w-full h-1.5 bg-border-light dark:bg-border-dark">
-                <div id="cookProgress" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
-            </div>
-        </div>
 
-        <!-- Cook Mode Footer Controls -->
-        <div class="p-6 border-t border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex items-center justify-between gap-4">
-            <button onclick="prevStep()" id="btnPrev" class="flex-1 py-6 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark font-bold text-lg text-text-sec-light dark:text-text-sec-dark hover:bg-border-light dark:hover:bg-border-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined">arrow_back</span>
-                Sebelumnya
-            </button>
-            <button onclick="nextStep()" id="btnNext" class="flex-1 py-6 rounded-2xl bg-primary text-black font-black text-xl hover:brightness-105 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                Selanjutnya
-                <span class="material-symbols-outlined">arrow_forward</span>
-            </button>
+            <!-- Cook Mode Main Content -->
+            <div class="flex-1 flex flex-col relative bg-background-light dark:bg-background-dark w-full" @click="showIngredients = false"> <!-- Click overlay to close sidebar on mobile -->
+                
+                <!-- Progress Bar -->
+                <div class="w-full h-2 bg-border-light dark:bg-border-dark relative z-10">
+                    <div id="cookProgress" class="h-full bg-primary transition-all duration-500 ease-out shadow-[0_0_10px_rgba(249,245,6,0.5)]" style="width: 0%"></div>
+                </div>
+
+                <div class="flex-1 flex flex-col justify-center items-center p-6 md:p-12 text-center overflow-y-auto w-full relative">
+                    <!-- Step Content Container -->
+                    <div id="cookStepContent" class="max-w-3xl mx-auto w-full transition-all duration-300 transform origin-center" :style="`transform: scale(${fontSize})`">
+                        <div class="mb-8">
+                            <span class="inline-block px-6 py-2 rounded-full bg-primary/10 text-primary-dark font-black tracking-widest uppercase text-sm border border-primary/20">
+                                Langkah <span id="currentStepDisplay" class="text-lg ml-1">1</span>
+                            </span>
+                        </div>
+                        <!-- Explicit text color for visibility -->
+                        <p id="stepText" class="font-black text-gray-900 dark:text-white leading-relaxed tracking-tight transition-all drop-shadow-sm text-3xl md:text-4xl"></p>
+                    </div>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="p-4 md:p-6 border-t border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex items-center justify-center gap-4 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+                    <button onclick="prevStep()" id="btnPrev" class="px-6 md:px-8 py-4 rounded-2xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark font-bold text-text-sec-light dark:text-text-sec-dark hover:bg-border-light dark:hover:bg-border-dark disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span class="hidden sm:inline">Sebelumnya</span>
+                    </button>
+                    
+                    <div class="flex-1 max-w-md">
+                        <button onclick="nextStep()" id="btnNext" class="w-full py-4 rounded-2xl bg-primary text-black font-black text-xl hover:brightness-105 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all flex items-center justify-center gap-2 group border-b-4 border-yellow-600 active:border-b-0">
+                            Selanjutnya
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>
@@ -397,6 +466,39 @@ const cookProgress = document.getElementById('cookProgress');
 const btnPrev = document.getElementById('btnPrev');
 const btnNext = document.getElementById('btnNext');
 
+// Alpine Logic for Timer & UI
+document.addEventListener('alpine:init', () => {
+    Alpine.data('cookMode', () => ({
+        // ... handled inside HTML x-data for simplicity in blade
+    }))
+});
+
+// Timer Logic (Vanilla JS to work alongside Alpine x-data)
+function toggleTimer() {
+    // Access Alpine component data scope
+    const el = document.getElementById('cookModeModal');
+    const data = Alpine.$data(el);
+    
+    if (data.timerRunning) {
+        clearInterval(data.timerInterval);
+        data.timerRunning = false;
+    } else {
+        data.timerRunning = true;
+        data.timerInterval = setInterval(() => {
+            data.timer++;
+        }, 1000);
+    }
+}
+
+function resetTimer() {
+    const el = document.getElementById('cookModeModal');
+    const data = Alpine.$data(el);
+    data.timerRunning = false;
+    clearInterval(data.timerInterval);
+    data.timer = 0;
+}
+
+
 function openCookMode() {
     modal.classList.remove('hidden');
     // Lock scroll on body
@@ -424,13 +526,13 @@ function updateStepUI() {
     btnPrev.disabled = currentStepIndex === 0;
     
     if (currentStepIndex === steps.length - 1) {
-        btnNext.innerHTML = 'Selesai <span class="material-symbols-outlined">check_circle</span>';
+        btnNext.innerHTML = 'Selesai Masak! <span class="material-symbols-outlined">check_circle</span>';
         btnNext.classList.replace('bg-primary', 'bg-green-500');
-        btnNext.classList.add('text-white');
+        btnNext.classList.replace('text-black', 'text-white');
     } else {
-        btnNext.innerHTML = 'Selanjutnya <span class="material-symbols-outlined">arrow_forward</span>';
+        btnNext.innerHTML = 'Selanjutnya <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>';
         btnNext.classList.replace('bg-green-500', 'bg-primary');
-        btnNext.classList.remove('text-white');
+        btnNext.classList.replace('text-white', 'text-black');
     }
 }
 
@@ -443,9 +545,10 @@ function nextStep() {
         closeCookMode();
         // Optional: Show celebration confetti or ask for review
         confetti({
-            particleCount: 100,
+            particleCount: 150,
             spread: 70,
-            origin: { y: 0.6 }
+            origin: { y: 0.6 },
+            colors: ['#f9f506', '#eab308', '#ffffff']
         });
     }
 }

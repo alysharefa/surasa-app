@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Kuliner;
+use App\Models\Rating;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -202,6 +204,37 @@ class kulinerSeeder extends Seeder
 
             Kuliner::create($kuliner);
         }
-        //
+
+        // Generate random ratings for each kuliner to match the seeded data concept
+        // We will overwrite the hardcoded values by actual data aggregation
+        $users = User::all();
+        $kuliners = Kuliner::all();
+
+        if ($users->count() > 0 && $kuliners->count() > 0) {
+            foreach ($kuliners as $kuliner) {
+                // Create random number of ratings (e.g., between 5 and 20 for demo purposes, 
+                // or up to total_reviews if we want to match the seed exactly, but random is safer/easier)
+                $reviewCount = rand(5, 20); 
+                
+                // If we want to respect the seeded 'total_reviews' we could try to match it, 
+                // but re-calculating from real data is better for consistency.
+                
+                for ($i = 0; $i < $reviewCount; $i++) {
+                    $user = $users->random();
+                    
+                    // Avoid duplicate rating from same user
+                    if (!$kuliner->ratings()->where('user_id', $user->id)->exists()) {
+                        Rating::create([
+                            'user_id' => $user->id,
+                            'kuliner_id' => $kuliner->id,
+                            'rating' => rand(3, 5), // Mostly positive ratings
+                        ]);
+                    }
+                }
+
+                // Force update the aggregate columns to match the new ratings
+                $kuliner->updateAverageRating();
+            }
+        }
     }
 }

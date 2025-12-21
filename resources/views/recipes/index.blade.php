@@ -24,6 +24,12 @@
                                 <button type="submit" class="px-4 text-primary hover:text-primary/80 flex items-center">
                                     <span class="material-symbols-outlined">arrow_forward</span>
                                 </button>
+                                @if(request('difficulty'))
+                                    <input type="hidden" name="difficulty" value="{{ request('difficulty') }}">
+                                @endif
+                                @if(request('sort'))
+                                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                                @endif
                             </div>
                         </label>
                     </form>
@@ -34,22 +40,22 @@
             <div class="flex flex-col md:flex-row items-center justify-between gap-4 w-full sticky top-[80px] z-30 py-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm mb-6">
                 <!-- Chips -->
                 <div class="flex gap-3 overflow-x-auto no-scrollbar w-full md:w-auto pb-2 md:pb-0">
-                    <a href="{{ route('recipes.index') }}" 
+                    <a href="{{ route('recipes.index', array_merge(request()->except(['difficulty', 'page']))) }}" 
                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 shadow-sm transition-all active:scale-95 
                        {{ !request('difficulty') ? 'bg-primary text-[#1c1c0d] font-bold shadow-md scale-105' : 'bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary text-text-main-light dark:text-text-main-dark font-medium' }}">
                         <p class="text-sm leading-normal">Semua</p>
                     </a>
-                    <a href="{{ route('recipes.index', ['difficulty' => 'mudah']) }}" 
+                    <a href="{{ route('recipes.index', array_merge(request()->query(), ['difficulty' => 'mudah'])) }}" 
                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-all active:scale-95
                        {{ request('difficulty') == 'mudah' ? 'bg-primary text-[#1c1c0d] font-bold shadow-md scale-105' : 'bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary text-text-main-light dark:text-text-main-dark font-medium' }}">
                         <p class="text-sm leading-normal">Mudah</p>
                     </a>
-                    <a href="{{ route('recipes.index', ['difficulty' => 'sedang']) }}" 
+                    <a href="{{ route('recipes.index', array_merge(request()->query(), ['difficulty' => 'sedang'])) }}" 
                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-all active:scale-95
                        {{ request('difficulty') == 'sedang' ? 'bg-primary text-[#1c1c0d] font-bold shadow-md scale-105' : 'bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary text-text-main-light dark:text-text-main-dark font-medium' }}">
                         <p class="text-sm leading-normal">Sedang</p>
                     </a>
-                    <a href="{{ route('recipes.index', ['difficulty' => 'sulit']) }}" 
+                    <a href="{{ route('recipes.index', array_merge(request()->query(), ['difficulty' => 'sulit'])) }}" 
                        class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-all active:scale-95
                        {{ request('difficulty') == 'sulit' ? 'bg-primary text-[#1c1c0d] font-bold shadow-md scale-105' : 'bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark hover:border-primary dark:hover:border-primary text-text-main-light dark:text-text-main-dark font-medium' }}">
                         <p class="text-sm leading-normal">Sulit</p>

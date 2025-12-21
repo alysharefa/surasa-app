@@ -112,10 +112,10 @@
 
                 @else
                 <div class="flex items-center bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-full p-1 shadow-sm">
-                    <a href="{{ route('login') }}" class="px-5 py-2 rounded-full text-sm font-bold text-text-main-light dark:text-text-main-dark hover:bg-background-light dark:hover:bg-background-dark transition-colors">
+                    <a href="{{ route('login') }}" class="px-5 py-2 rounded-full text-sm font-bold text-text-main-light dark:text-text-main-dark hover:bg-background-light dark:hover:bg-background-dark active:scale-95 transition-all duration-200">
                         Masuk
                     </a>
-                    <a href="{{ route('register') }}" class="px-5 py-2 bg-primary text-text-main-light rounded-full text-sm font-bold hover:shadow-lg hover:shadow-primary/20 transition-all">
+                    <a href="{{ route('register') }}" class="px-5 py-2 bg-primary text-text-main-light rounded-full text-sm font-bold hover:shadow-lg hover:shadow-primary/20 hover:brightness-105 active:scale-95 transition-all duration-200">
                         Daftar
                     </a>
                 </div>

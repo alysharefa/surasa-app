@@ -81,11 +81,13 @@
                         <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Lokasi *</span>
                         <input type="text" name="location" value="{{ old('location', $kuliner->location) }}" required
                                class="w-full h-14 px-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white">
+                        @error('location')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                     </label>
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Alamat Lengkap</span>
                         <input type="text" name="address" value="{{ old('address', $kuliner->address) }}"
                                class="w-full h-14 px-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white">
+                        @error('address')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                     </label>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -96,6 +98,7 @@
                             <input type="number" name="price_min" value="{{ old('price_min', $kuliner->price_min) }}" min="0"
                                    class="w-full h-14 pl-12 pr-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white">
                         </div>
+                        @error('price_min')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                     </label>
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Harga Maksimum</span>
@@ -104,18 +107,21 @@
                             <input type="number" name="price_max" value="{{ old('price_max', $kuliner->price_max) }}" min="0"
                                    class="w-full h-14 pl-12 pr-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white">
                         </div>
+                        @error('price_max')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                     </label>
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Jam Operasional</span>
                         <input type="text" name="open_hours" value="{{ old('open_hours', $kuliner->open_hours) }}"
                                class="w-full h-14 px-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white"
                                placeholder="08:00 - 22:00">
+                        @error('open_hours')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                     </label>
                 </div>
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Kontak</span>
                     <input type="text" name="contact" value="{{ old('contact', $kuliner->contact) }}"
                            class="w-full h-14 px-5 rounded-full bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white">
+                    @error('contact')<p class="text-red-500 text-sm">{{ $message }}</p>@enderror
                 </label>
             </div>
 
@@ -177,6 +183,7 @@
                         <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">PNG, JPG atau GIF (max. 5MB)</p>
                     </div>
                 </label>
+                @error('image')<p class="text-red-500 text-sm mt-2 text-center">{{ $message }}</p>@enderror
             </div>
 
             <hr class="border-neutral-200 dark:border-neutral-700">

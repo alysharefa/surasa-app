@@ -43,15 +43,75 @@
 
             <!-- Filters Section -->
             <div class="mb-10 px-1">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
                     <h3 class="text-xl font-bold text-text-main-light dark:text-text-main-dark">Kategori</h3>
                     
-                    @if(request('search') || request('category') || request('sort'))
-                    <a href="{{ route('kuliners.index') }}" class="text-sm font-medium text-red-500 hover:text-red-600 hover:underline flex items-center gap-1">
-                        <span class="material-symbols-outlined text-base">close</span>
-                        Hapus Filter
-                    </a>
-                    @endif
+                    <div class="flex items-center gap-4">
+                        <!-- Location Dropdown (Custom UI) -->
+                        <div x-data="{ 
+                            open: false, 
+                            selected: '{{ request('location') }}',
+                            select(val) {
+                                this.selected = val;
+                                this.open = false;
+                                // Wait for x-model to update hidden input then submit
+                                this.$nextTick(() => { $refs.locationForm.submit() });
+                            }
+                        }" class="relative min-w-[180px]">
+                            
+                            <form action="{{ route('kuliners.index') }}" method="GET" x-ref="locationForm">
+                                @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                                @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+                                @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+                                <input type="hidden" name="location" :value="selected">
+
+                                <!-- Trigger Button -->
+                                <button type="button" @click="open = !open" @click.outside="open = false" 
+                                    class="w-full flex items-center justify-between gap-2 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-full py-2.5 pl-4 pr-3 text-sm font-bold shadow-sm hover:border-primary focus:ring-2 focus:ring-primary/50 transition-all text-text-main-light dark:text-text-main-dark">
+                                    <div class="flex items-center gap-2 truncate">
+                                        <span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+                                        <span x-text="selected ? selected : 'Semua Lokasi'" class="truncate"></span>
+                                    </div>
+                                    <span class="material-symbols-outlined text-[20px] text-text-sec-light transition-transform duration-200" :class="open ? 'rotate-180' : ''">expand_more</span>
+                                </button>
+                            </form>
+
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-2"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 translate-y-2"
+                                 class="absolute z-50 top-full mt-2 w-full min-w-[220px] right-0 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl shadow-xl max-h-60 overflow-y-auto py-1"
+                                 style="display: none;">
+                                
+                                <button type="button" @click="select('')" 
+                                    class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between group"
+                                    :class="!selected ? 'text-primary bg-primary/5' : 'text-text-main-light dark:text-text-main-dark'">
+                                    <span>Semua Lokasi</span>
+                                    <span x-show="!selected" class="material-symbols-outlined text-[18px]">check</span>
+                                </button>
+
+                                @foreach($locations as $loc)
+                                <button type="button" @click="select('{{ $loc }}')" 
+                                    class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between group"
+                                    :class="selected === '{{ $loc }}' ? 'text-primary bg-primary/5' : 'text-text-main-light dark:text-text-main-dark'">
+                                    <span>{{ $loc }}</span>
+                                    <span x-show="selected === '{{ $loc }}'" class="material-symbols-outlined text-[18px]">check</span>
+                                </button>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        @if(request('search') || request('category') || request('sort') || request('location'))
+                        <a href="{{ route('kuliners.index') }}" class="text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded-full transition-all flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                            <span class="hidden sm:inline">Reset</span>
+                        </a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">

@@ -29,6 +29,10 @@ class Recipe extends Model
         'tips',
         'is_approved',
         'views',
+        'calories',
+        'protein',
+        'fat',
+        'carbs',
     ];
 
     protected $casts = [
@@ -39,6 +43,10 @@ class Recipe extends Model
         'cooking_time' => 'integer',
         'servings' => 'integer',
         'views' => 'integer',
+        'calories' => 'integer',
+        'protein' => 'integer',
+        'fat' => 'integer',
+        'carbs' => 'integer',
     ];
 
     /**

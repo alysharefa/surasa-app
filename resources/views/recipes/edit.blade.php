@@ -230,6 +230,54 @@
                                 </div>
                             </div>
 
+                            <!-- Nutrition Info -->
+                            <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-border-light dark:border-border-dark">
+                                <label class="flex flex-col">
+                                    <span class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Kalori (kcal)</span>
+                                    <input 
+                                        type="number" 
+                                        name="calories" 
+                                        value="{{ old('calories', $recipe->calories) }}"
+                                        min="0"
+                                        class="w-full rounded-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-main dark:text-white focus:ring-1 focus:ring-primary outline-none" 
+                                        placeholder="0"
+                                    />
+                                </label>
+                                <label class="flex flex-col">
+                                    <span class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Protein (g)</span>
+                                    <input 
+                                        type="number" 
+                                        name="protein" 
+                                        value="{{ old('protein', $recipe->protein) }}"
+                                        min="0"
+                                        class="w-full rounded-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-main dark:text-white focus:ring-1 focus:ring-primary outline-none" 
+                                        placeholder="0"
+                                    />
+                                </label>
+                                <label class="flex flex-col">
+                                    <span class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Lemak (g)</span>
+                                    <input 
+                                        type="number" 
+                                        name="fat" 
+                                        value="{{ old('fat', $recipe->fat) }}"
+                                        min="0"
+                                        class="w-full rounded-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-main dark:text-white focus:ring-1 focus:ring-primary outline-none" 
+                                        placeholder="0"
+                                    />
+                                </label>
+                                <label class="flex flex-col">
+                                    <span class="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Karbo (g)</span>
+                                    <input 
+                                        type="number" 
+                                        name="carbs" 
+                                        value="{{ old('carbs', $recipe->carbs) }}"
+                                        min="0"
+                                        class="w-full rounded-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-main dark:text-white focus:ring-1 focus:ring-primary outline-none" 
+                                        placeholder="0"
+                                    />
+                                </label>
+                            </div>
+
                             <!-- Tags -->
                             <div class="flex flex-col gap-2">
                                 <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Tags</span>

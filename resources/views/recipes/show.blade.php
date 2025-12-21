@@ -237,22 +237,40 @@
                         </div>
 
                         <!-- Nutrition Info (Optional) -->
+                        @if($recipe->calories || $recipe->protein || $recipe->fat || $recipe->carbs)
                         <div class="mt-8 pt-8 border-t border-dashed border-border-light dark:border-border-dark">
                             <h4 class="font-bold text-sm mb-4 text-text-main-light dark:text-text-main-dark flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary">nutrition</span>
                                 Info Nutrisi
                             </h4>
                             <div class="grid grid-cols-2 gap-3">
+                                @if($recipe->calories)
                                 <div class="bg-background-light dark:bg-background-dark p-3 rounded-xl text-center">
                                     <span class="text-xs text-text-sec-light dark:text-text-sec-dark font-bold uppercase">Kalori</span>
-                                    <p class="font-black text-primary">{{ $recipe->calories ?? '-' }}</p>
+                                    <p class="font-black text-primary">{{ $recipe->calories }} kcal</p>
                                 </div>
+                                @endif
+                                @if($recipe->protein)
                                 <div class="bg-background-light dark:bg-background-dark p-3 rounded-xl text-center">
                                     <span class="text-xs text-text-sec-light dark:text-text-sec-dark font-bold uppercase">Protein</span>
-                                    <p class="font-black text-primary">{{ $recipe->protein ? $recipe->protein.'g' : '-' }}</p>
+                                    <p class="font-black text-primary">{{ $recipe->protein }}g</p>
                                 </div>
+                                @endif
+                                @if($recipe->fat)
+                                <div class="bg-background-light dark:bg-background-dark p-3 rounded-xl text-center">
+                                    <span class="text-xs text-text-sec-light dark:text-text-sec-dark font-bold uppercase">Lemak</span>
+                                    <p class="font-black text-primary">{{ $recipe->fat }}g</p>
+                                </div>
+                                @endif
+                                @if($recipe->carbs)
+                                <div class="bg-background-light dark:bg-background-dark p-3 rounded-xl text-center">
+                                    <span class="text-xs text-text-sec-light dark:text-text-sec-dark font-bold uppercase">Karbo</span>
+                                    <p class="font-black text-primary">{{ $recipe->carbs }}g</p>
+                                </div>
+                                @endif
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
 

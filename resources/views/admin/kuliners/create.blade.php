@@ -94,6 +94,7 @@
                                 <input type="text" name="location" value="{{ old('location') }}" required
                                        class="w-full px-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white"
                                        placeholder="Contoh: Surabaya Pusat">
+                                @error('location')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </label>
                             
                             <label class="flex flex-col gap-2">
@@ -101,6 +102,7 @@
                                 <input type="text" name="contact" value="{{ old('contact') }}"
                                        class="w-full px-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white"
                                        placeholder="Contoh: 08123456789">
+                                @error('contact')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </label>
                             
                             <label class="flex flex-col gap-2 md:col-span-2">
@@ -108,6 +110,7 @@
                                 <input type="text" name="address" value="{{ old('address') }}"
                                        class="w-full px-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white"
                                        placeholder="Jl. Tunjungan No. 12, Surabaya">
+                                @error('address')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </label>
                         </div>
                     </div>
@@ -167,6 +170,7 @@
                                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-neutral-900 dark:text-white"
                                                placeholder="0">
                                     </div>
+                                    @error('price_min')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </label>
                                 <label class="flex flex-col gap-2">
                                     <span class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Max. Harga</span>
@@ -176,6 +180,7 @@
                                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-neutral-900 dark:text-white"
                                                placeholder="0">
                                     </div>
+                                    @error('price_max')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </label>
                             </div>
 
@@ -187,6 +192,7 @@
                                            class="w-full pl-12 pr-4 py-3 rounded-xl bg-background-light dark:bg-background-dark border border-neutral-200 dark:border-neutral-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-neutral-400 text-neutral-900 dark:text-white"
                                            placeholder="e.g. 08:00 - 22:00">
                                 </div>
+                                @error('open_hours')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </label>
                         </div>
                     </div>
@@ -222,6 +228,7 @@
                                 <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">PNG, JPG (Max. 5MB)</p>
                             </div>
                         </label>
+                        @error('image')<p class="text-red-500 text-xs mt-2 text-center">{{ $message }}</p>@enderror
                     </div>
 
                 </div>

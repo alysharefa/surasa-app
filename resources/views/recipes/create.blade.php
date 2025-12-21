@@ -10,7 +10,7 @@
                     name="image" 
                     id="recipeImage"
                     accept="image/*"
-                    class="absolute inset-0 w-full h-full opacity-0 z-20 cursor-pointer"
+                    class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
                     onchange="previewImage(this)"
                 />
                 
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Main Content Container -->
-            <div class="max-w-[1000px] mx-auto px-4 -mt-16 relative z-10 mb-12">
+            <div class="max-w-[1000px] mx-auto px-4 -mt-16 relative z-30 mb-12">
                 <div class="bg-surface-light dark:bg-surface-dark rounded-3xl shadow-lg border border-border-light dark:border-border-dark p-6 md:p-8">
                     
                     <!-- 2. Header Inputs (Title, Description, Meta) -->
@@ -72,26 +72,58 @@
                         ></textarea>
 
                         <!-- Meta Inputs (Time & Servings) -->
-                        <div class="flex flex-wrap justify-center gap-8 py-4 border-y border-border-light dark:border-border-dark w-full max-w-3xl my-2">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold uppercase tracking-wider text-text-muted">Persiapan</span>
+                        <div class="flex flex-wrap justify-center gap-4 py-4 border-t border-border-light dark:border-border-dark w-full max-w-3xl mt-4">
+                            <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Persiapan</span>
                                 <div class="flex items-baseline gap-1">
-                                    <input type="number" name="prep_time" placeholder="0" class="w-12 text-center bg-transparent border-b border-stone-300 dark:border-stone-700 focus:border-primary p-0 text-lg font-bold text-text-main dark:text-white focus:ring-0" min="0">
-                                    <span class="text-xs font-medium">m</span>
+                                    <input type="number" name="prep_time" placeholder="0" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">m</span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold uppercase tracking-wider text-text-muted">Masak</span>
+                            <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Masak</span>
                                 <div class="flex items-baseline gap-1">
-                                    <input type="number" name="cooking_time" placeholder="0" class="w-12 text-center bg-transparent border-b border-stone-300 dark:border-stone-700 focus:border-primary p-0 text-lg font-bold text-text-main dark:text-white focus:ring-0" min="0">
-                                    <span class="text-xs font-medium">m</span>
+                                    <input type="number" name="cooking_time" placeholder="0" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">m</span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold uppercase tracking-wider text-text-muted">Porsi</span>
+                            <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Porsi</span>
                                 <div class="flex items-baseline gap-1">
-                                    <input type="number" name="servings" value="2" class="w-12 text-center bg-transparent border-b border-stone-300 dark:border-stone-700 focus:border-primary p-0 text-lg font-bold text-text-main dark:text-white focus:ring-0" min="1">
-                                    <span class="text-xs font-medium">org</span>
+                                    <input type="number" name="servings" value="2" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="1">
+                                    <span class="text-xs font-medium text-text-muted">org</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nutrition Info -->
+                        <div class="flex flex-wrap justify-center gap-4 pb-4 border-b border-border-light dark:border-border-dark w-full max-w-3xl mb-4">
+                            <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Kalori</span>
+                                <div class="flex items-baseline gap-1">
+                                    <input type="number" name="calories" placeholder="0" class="w-16 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">kcal</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Protein</span>
+                                <div class="flex items-baseline gap-1">
+                                    <input type="number" name="protein" placeholder="0" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">g</span>
+                                </div>
+                            </div>
+                             <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Lemak</span>
+                                <div class="flex items-baseline gap-1">
+                                    <input type="number" name="fat" placeholder="0" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">g</span>
+                                </div>
+                            </div>
+                             <div class="flex flex-col items-center gap-1 px-4 py-3 bg-background-light dark:bg-background-dark rounded-full min-w-[90px]">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted">Karbo</span>
+                                <div class="flex items-baseline gap-1">
+                                    <input type="number" name="carbs" placeholder="0" class="w-12 text-center bg-transparent border-none focus:ring-0 p-0 text-xl font-bold text-text-main dark:text-white" min="0">
+                                    <span class="text-xs font-medium text-text-muted">g</span>
                                 </div>
                             </div>
                         </div>

@@ -95,6 +95,10 @@ class RecipeController extends Controller
             'servings' => 'nullable|integer|min:1|max:100',
             'difficulty' => 'nullable|in:mudah,sedang,sulit',
             'tips' => 'nullable|string|max:2000',
+            'calories' => 'nullable|integer|min:0',
+            'protein' => 'nullable|integer|min:0',
+            'fat' => 'nullable|integer|min:0',
+            'carbs' => 'nullable|integer|min:0',
         ];
 
         // Only validate image if one was uploaded and is valid
@@ -133,6 +137,10 @@ class RecipeController extends Controller
             'servings' => $request->servings ?: 4,
             'difficulty' => $request->difficulty ?: 'mudah',
             'tips' => $request->tips,
+            'calories' => $request->calories,
+            'protein' => $request->protein,
+            'fat' => $request->fat,
+            'carbs' => $request->carbs,
             'is_approved' => true, // Auto-approve new recipes
         ]);
 
@@ -211,6 +219,10 @@ class RecipeController extends Controller
             'servings' => 'nullable|integer|min:1',
             'difficulty' => 'nullable|in:mudah,sedang,sulit',
             'tips' => 'nullable|string|max:2000',
+            'calories' => 'nullable|integer|min:0',
+            'protein' => 'nullable|integer|min:0',
+            'fat' => 'nullable|integer|min:0',
+            'carbs' => 'nullable|integer|min:0',
         ];
 
         // Only validate image if one was uploaded
@@ -242,6 +254,10 @@ class RecipeController extends Controller
             'servings' => $request->servings,
             'difficulty' => $request->difficulty ?: 'mudah',
             'tips' => $request->tips,
+            'calories' => $request->calories,
+            'protein' => $request->protein,
+            'fat' => $request->fat,
+            'carbs' => $request->carbs,
         ];
 
         if ($request->hasFile('image') && $request->file('image')->isValid()) {

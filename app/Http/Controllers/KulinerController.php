@@ -18,6 +18,7 @@ class KulinerController extends Controller
         $categoryId = $request->input('category');
         $sort = $request->input('sort', 'rating');
         $search = $request->input('search');
+        $location = $request->input('location');
 
         $kuliners = Kuliner::active()
             ->with('category')
@@ -32,6 +33,9 @@ class KulinerController extends Controller
             ->when($categoryId, function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             })
+            ->when($location, function ($query) use ($location) {
+                $query->where('location', $location);
+            })
             ->when($sort === 'rating', function ($query) {
                 $query->orderBy('average_rating', 'desc');
             })
@@ -44,8 +48,9 @@ class KulinerController extends Controller
             ->paginate(12);
 
         $categories = Category::orderBy('name')->get();
+        $locations = Kuliner::active()->select('location')->distinct()->whereNotNull('location')->orderBy('location')->pluck('location');
 
-        return view('kuliners.index', compact('kuliners', 'categories', 'categoryId', 'sort', 'search'));
+        return view('kuliners.index', compact('kuliners', 'categories', 'locations', 'categoryId', 'sort', 'search', 'location'));
     }
 
     /**

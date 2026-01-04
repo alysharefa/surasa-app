@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class RecipeController extends Controller
 {
@@ -34,7 +35,14 @@ class RecipeController extends Controller
     public function show(Recipe $recipe): View
     {
         $recipe->load(['user', 'kuliner']);
-        return view('admin.recipes.show', compact('recipe'));
+
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        $isBookmarked = $user ? $user->bookmarks()->where('recipe_id', $recipe->id)->exists() : false;
+        $isLiked = $recipe->isLikedBy($user);
+
+        return view('admin.recipes.show', compact('recipe', 'isBookmarked', 'isLiked'));
     }
 
     /**

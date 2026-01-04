@@ -231,10 +231,18 @@
                                 </span>
                             </div>
                             <div class="flex flex-col gap-3">
-                                <button class="w-full py-3.5 bg-primary text-text-main-light font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                @php
+                                    $mapQuery = $kuliner->latitude && $kuliner->longitude 
+                                        ? $kuliner->latitude . ',' . $kuliner->longitude 
+                                        : urlencode($kuliner->name . ' ' . $kuliner->address);
+                                    $directionUrl = "https://www.google.com/maps/dir/?api=1&destination={$mapQuery}";
+                                    $locationUrl = "https://www.google.com/maps/search/?api=1&query={$mapQuery}";
+                                @endphp
+
+                                <a href="{{ $directionUrl }}" target="_blank" class="w-full py-3.5 bg-primary text-text-main-light font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                                     <span class="material-symbols-outlined">map</span>
                                     Petunjuk Arah
-                                </button>
+                                </a>
                                 
                                 @auth
                                 <form action="{{ route('kuliners.like', $kuliner->id) }}" method="POST">
@@ -261,13 +269,13 @@
                         <!-- Location Map -->
                         <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-[2rem] border border-border-light dark:border-border-dark shadow-sm">
                             <h3 class="font-bold mb-4 text-text-main-light dark:text-text-main-dark">Lokasi</h3>
-                            <div class="w-full aspect-square bg-background-light dark:bg-background-dark rounded-xl overflow-hidden relative group cursor-pointer border border-border-light dark:border-border-dark transition-all hover:ring-2 hover:ring-primary/50">
+                            <a href="{{ $locationUrl }}" target="_blank" class="block w-full aspect-square bg-background-light dark:bg-background-dark rounded-xl overflow-hidden relative group cursor-pointer border border-border-light dark:border-border-dark transition-all hover:ring-2 hover:ring-primary/50">
                                 <img src="{{ asset('images/map_surabaya.png') }}" alt="Peta Lokasi" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                     <div class="size-8 bg-primary/20 rounded-full animate-ping absolute"></div>
                                     <span class="material-symbols-outlined text-primary-dark text-4xl drop-shadow-md relative z-10">location_on</span>
                                 </div>
-                            </div>
+                            </a>
                             <p class="mt-4 text-sm text-text-sec-light dark:text-text-sec-dark font-medium leading-relaxed">
                                 {{ $kuliner->address }}
                             </p>

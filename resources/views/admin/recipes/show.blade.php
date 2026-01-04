@@ -1,15 +1,12 @@
-<x-app-layout>
+<x-layouts.admin 
+    title="{{ $recipe->title }}" 
+    :header="'Detail Resep'" 
+    :breadcrumbs="[['label' => 'Resep', 'route' => 'admin.recipes.index'], ['label' => $recipe->title]]"
+>
+    <!-- Content from resources/views/recipes/show.blade.php, adapted for Admin -->
     <div class="bg-background-light dark:bg-background-dark min-h-screen py-8">
         <main class="w-full max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8">
-            <!-- Breadcrumbs -->
-            <div class="flex flex-wrap items-center gap-2 mb-6 text-sm md:text-base">
-                <a class="text-text-sec-light dark:text-text-sec-dark hover:underline" href="{{ route('home') }}">Beranda</a>
-                <span class="text-text-sec-light dark:text-text-sec-dark">/</span>
-                <a class="text-text-sec-light dark:text-text-sec-dark hover:underline" href="{{ route('recipes.index') }}">Resep</a>
-                <span class="text-text-sec-light dark:text-text-sec-dark">/</span>
-                <span class="font-medium text-text-main-light dark:text-text-main-dark">{{ $recipe->title }}</span>
-            </div>
-
+            
             <!-- Hero Section -->
             <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-12">
                 <!-- Image Column -->
@@ -103,11 +100,12 @@
                         <!-- Cook Mode Button -->
                         <button onclick="openCookMode()" class="w-full py-4 rounded-xl bg-primary text-black font-black text-lg hover:brightness-105 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
                             <span class="material-symbols-outlined text-[28px]">play_circle</span>
-                            MULAI MASAK
+                            MULAI MASAK (ADMIN MODE)
                         </button>
 
                         <div class="grid grid-cols-3 gap-2">
-                            @auth
+                            <!-- Auth Checks Removed for Admin View - Always Show or Adapt -->
+                            <!-- Likes/Bookmarks point to public routes -->
                             <form action="{{ route('bookmarks.toggle', $recipe->id) }}" method="POST" class="w-full">
                                 @csrf
                                 <button type="submit" class="w-full h-full py-3.5 rounded-xl border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 active:scale-95 transition-all flex flex-col items-center justify-center gap-1 {{ $isBookmarked ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' : 'bg-surface-light dark:bg-surface-dark' }}">
@@ -123,16 +121,6 @@
                                     <span class="text-xs">Suka</span>
                                 </button>
                             </form>
-                            @else
-                            <a href="{{ route('login') }}" class="w-full py-3.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 transition-colors flex flex-col items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-2xl">bookmark_add</span>
-                                <span class="text-xs">Simpan</span>
-                            </a>
-                            <a href="{{ route('login') }}" class="w-full py-3.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 transition-colors flex flex-col items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-2xl">favorite</span>
-                                <span class="text-xs">Suka</span>
-                            </a>
-                            @endauth
 
                             <button onclick="window.print()" class="w-full py-3.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 transition-colors flex flex-col items-center justify-center gap-1">
                                 <span class="material-symbols-outlined text-2xl">print</span>
@@ -140,9 +128,9 @@
                             </button>
                         </div>
                         
-                        <a href="{{ route('recipes.index') }}" class="py-3.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2">
+                        <a href="{{ route('admin.recipes.index') }}" class="py-3.5 rounded-xl bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-main-light dark:text-text-main-dark font-bold hover:bg-background-light dark:hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined">arrow_back</span>
-                            Kembali
+                            Kembali ke Daftar
                         </a>
                     </div>
                 </div>
@@ -326,34 +314,46 @@
                     @endif
 
                     <!-- Owner Actions -->
-                    @auth
-                        @if(auth()->id() === $recipe->user_id || auth()->user()->isAdmin())
-                        <div class="bg-surface-light dark:bg-surface-dark p-8 rounded-[2rem] border border-border-light dark:border-border-dark flex flex-col sm:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h4 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-1">Kelola Resep Ini</h4>
-                                <p class="text-sm text-text-sec-light dark:text-text-sec-dark">Anda adalah pemilik resep ini.</p>
-                            </div>
-                            <div class="flex flex-wrap gap-3">
-                                <a href="{{ route('recipes.edit', $recipe) }}" class="flex items-center gap-2 px-6 py-3 bg-text-main-light dark:bg-white text-white dark:text-black rounded-full font-bold text-sm hover:opacity-90 transition-all">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                    Edit
-                                </a>
-                                <form action="{{ route('recipes.destroy', $recipe) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus resep ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full font-bold text-sm hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
+                    <div class="bg-surface-light dark:bg-surface-dark p-8 rounded-[2rem] border border-border-light dark:border-border-dark flex flex-col sm:flex-row items-center justify-between gap-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-1">Aksi Admin</h4>
+                            <p class="text-sm text-text-sec-light dark:text-text-sec-dark">Kelola resep ini sebagai administrator.</p>
                         </div>
-                        @endif
-                    @endauth
+                        <div class="flex flex-wrap gap-3">
+                            @if(!$recipe->is_approved)
+                            <form action="{{ route('admin.recipes.approve', $recipe) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-full font-bold text-sm hover:bg-green-600 transition-all">
+                                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                    Setujui
+                                </button>
+                            </form>
+                            @else
+                            <form action="{{ route('admin.recipes.reject', $recipe) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-yellow-500 text-black rounded-full font-bold text-sm hover:bg-yellow-600 transition-all">
+                                    <span class="material-symbols-outlined text-[18px]">unpublished</span>
+                                    Batalkan Persetujuan
+                                </button>
+                            </form>
+                            @endif
+                            <form action="{{ route('admin.recipes.destroy', $recipe) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus resep ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full font-bold text-sm hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+
     <!-- Cook Mode Modal -->
     <div id="cookModeModal" class="fixed inset-0 z-[9999] bg-background-light dark:bg-background-dark hidden flex-col transition-opacity duration-300" 
          x-data="cookModeData()" 
@@ -572,340 +572,337 @@
             </div>
         </div>
     </div>
+    <script>
+    // Recipe Data - with robust null handling
+    const recipeStepsRaw = @json($recipe->steps);
+    console.log('Raw steps from server:', recipeStepsRaw, 'Type:', typeof recipeStepsRaw);
 
-
-<script>
-// Recipe Data - with robust null handling
-const recipeStepsRaw = @json($recipe->steps);
-console.log('Raw steps from server:', recipeStepsRaw, 'Type:', typeof recipeStepsRaw);
-
-let steps = [];
-if (recipeStepsRaw) {
-    if (Array.isArray(recipeStepsRaw)) {
-        steps = recipeStepsRaw.filter(step => step && String(step).trim() !== '');
-    } else if (typeof recipeStepsRaw === 'string') {
-        steps = recipeStepsRaw.split('\n').filter(step => step && step.trim() !== '');
-    } else if (typeof recipeStepsRaw === 'object') {
-        // Handle case where steps might be an object with numeric keys
-        steps = Object.values(recipeStepsRaw).filter(step => step && String(step).trim() !== '');
+    let steps = [];
+    if (recipeStepsRaw) {
+        if (Array.isArray(recipeStepsRaw)) {
+            steps = recipeStepsRaw.filter(step => step && String(step).trim() !== '');
+        } else if (typeof recipeStepsRaw === 'string') {
+            steps = recipeStepsRaw.split('\n').filter(step => step && step.trim() !== '');
+        } else if (typeof recipeStepsRaw === 'object') {
+            // Handle case where steps might be an object with numeric keys
+            steps = Object.values(recipeStepsRaw).filter(step => step && String(step).trim() !== '');
+        }
     }
-}
-console.log('Processed steps array:', steps, 'Length:', steps.length);
+    console.log('Processed steps array:', steps, 'Length:', steps.length);
 
-// Alpine.js Cook Mode Data
-function cookModeData() {
-    console.log('cookModeData() called, steps variable has', steps.length, 'items');
-    return {
-        // State
-        showIngredients: false,
-        fontSize: 1,
-        currentStep: 0,
-        totalSteps: steps.length,
-        steps: steps,
-        completedSteps: [],
-        
-        // Timer State
-        countdownTimer: 0,
-        countdownRunning: false,
-        countdownInterval: null,
-        timerPresets: [1, 5, 10, 30],
-        timerAlert: false,
-        
-        // TTS State
-        ttsEnabled: false,
-        speechSynth: null,
-        
-        // Voice Control State
-        voiceEnabled: false,
-        recognition: null,
-        
-        // Serving Adjuster
-        servingMultiplier: 1,
-        
-        // Wake Lock
-        wakeLock: null,
+    // Alpine.js Cook Mode Data
+    function cookModeData() {
+        return {
+            // State
+            showIngredients: false,
+            fontSize: 1,
+            currentStep: 0,
+            totalSteps: steps.length,
+            steps: steps,
+            completedSteps: [],
+            
+            // Timer State
+            countdownTimer: 0,
+            countdownRunning: false,
+            countdownInterval: null,
+            timerPresets: [1, 5, 10, 30],
+            timerAlert: false,
+            
+            // TTS State
+            ttsEnabled: false,
+            speechSynth: null,
+            
+            // Voice Control State
+            voiceEnabled: false,
+            recognition: null,
+            
+            // Serving Adjuster
+            servingMultiplier: 1,
+            
+            // Wake Lock
+            wakeLock: null,
 
-        // Initialize
-        initCookMode() {
-            this.speechSynth = window.speechSynthesis;
-            this.initVoiceRecognition();
-        },
+            // Initialize
+            initCookMode() {
+                this.speechSynth = window.speechSynthesis;
+                this.initVoiceRecognition();
+            },
 
-        // Format time display
-        formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        },
+            // Format time display
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            },
 
-        // Countdown Timer Functions
-        addTime(minutes) {
-            this.countdownTimer += minutes * 60;
-        },
+            // Countdown Timer Functions
+            addTime(minutes) {
+                this.countdownTimer += minutes * 60;
+            },
 
-        toggleCountdown() {
-            if (this.countdownRunning) {
-                clearInterval(this.countdownInterval);
-                this.countdownRunning = false;
-            } else if (this.countdownTimer > 0) {
-                this.countdownRunning = true;
-                this.countdownInterval = setInterval(() => {
-                    if (this.countdownTimer > 0) {
-                        this.countdownTimer--;
-                        if (this.countdownTimer === 0) {
-                            this.triggerAlarm();
+            toggleCountdown() {
+                if (this.countdownRunning) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownRunning = false;
+                } else if (this.countdownTimer > 0) {
+                    this.countdownRunning = true;
+                    this.countdownInterval = setInterval(() => {
+                        if (this.countdownTimer > 0) {
+                            this.countdownTimer--;
+                            if (this.countdownTimer === 0) {
+                                this.triggerAlarm();
+                            }
                         }
-                    }
-                }, 1000);
-            }
-        },
-
-        resetCountdown() {
-            this.countdownRunning = false;
-            clearInterval(this.countdownInterval);
-            this.countdownTimer = 0;
-            this.timerAlert = false;
-        },
-
-        triggerAlarm() {
-            this.countdownRunning = false;
-            clearInterval(this.countdownInterval);
-            this.timerAlert = true;
-            
-            // Play alarm sound
-            const alarm = document.getElementById('timerAlarm');
-            if (alarm) {
-                alarm.currentTime = 0;
-                alarm.play().catch(() => {});
-            }
-
-            // Browser notification
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('⏰ Timer Selesai!', {
-                    body: 'Waktu memasak sudah habis!',
-                    icon: '/favicon.ico'
-                });
-            }
-
-            // Vibrate if supported
-            if ('vibrate' in navigator) {
-                navigator.vibrate([200, 100, 200, 100, 200]);
-            }
-        },
-
-        dismissAlert() {
-            this.timerAlert = false;
-        },
-
-        // TTS Functions
-        toggleTTS() {
-            this.ttsEnabled = !this.ttsEnabled;
-            if (this.ttsEnabled) {
-                this.speakStep();
-                // Request notification permission for timer
-                if ('Notification' in window && Notification.permission === 'default') {
-                    Notification.requestPermission();
+                    }, 1000);
                 }
-            } else {
-                this.speechSynth?.cancel();
-            }
-        },
+            },
 
-        speakStep() {
-            if (!this.ttsEnabled || !this.speechSynth) return;
-            
-            this.speechSynth.cancel();
-            const utterance = new SpeechSynthesisUtterance(this.steps[this.currentStep]);
-            utterance.lang = 'id-ID';
-            utterance.rate = 0.9;
-            this.speechSynth.speak(utterance);
-        },
+            resetCountdown() {
+                this.countdownRunning = false;
+                clearInterval(this.countdownInterval);
+                this.countdownTimer = 0;
+                this.timerAlert = false;
+            },
 
-        // Voice Control Functions
-        initVoiceRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return;
-
-            this.recognition = new SpeechRecognition();
-            this.recognition.continuous = true;
-            this.recognition.interimResults = false;
-            this.recognition.lang = 'id-ID';
-
-            this.recognition.onresult = (event) => {
-                const last = event.results.length - 1;
-                const command = event.results[last][0].transcript.toLowerCase().trim();
-                console.log('Voice command:', command);
-                this.handleVoiceCommand(command);
-            };
-
-            this.recognition.onerror = (event) => {
-                console.log('Voice recognition error:', event.error);
-                if (event.error === 'not-allowed') {
-                    this.voiceEnabled = false;
+            triggerAlarm() {
+                this.countdownRunning = false;
+                clearInterval(this.countdownInterval);
+                this.timerAlert = true;
+                
+                // Play alarm sound
+                const alarm = document.getElementById('timerAlarm');
+                if (alarm) {
+                    alarm.currentTime = 0;
+                    alarm.play().catch(() => {});
                 }
-            };
 
-            this.recognition.onend = () => {
-                if (this.voiceEnabled) {
-                    this.recognition.start();
-                }
-            };
-        },
-
-        handleVoiceCommand(command) {
-            if (command.includes('next') || command.includes('selanjutnya') || command.includes('lanjut')) {
-                this.nextStep();
-            } else if (command.includes('previous') || command.includes('sebelumnya') || command.includes('kembali')) {
-                this.prevStep();
-            } else if (command.includes('repeat') || command.includes('ulangi') || command.includes('ulang')) {
-                this.speakStep();
-            } else if (command.includes('selesai') || command.includes('done') || command.includes('complete')) {
-                this.toggleStepComplete(this.currentStep);
-            }
-        },
-
-        toggleVoiceControl() {
-            if (!this.recognition) {
-                alert('Browser tidak mendukung Voice Control');
-                return;
-            }
-
-            this.voiceEnabled = !this.voiceEnabled;
-            if (this.voiceEnabled) {
-                this.recognition.start();
-            } else {
-                this.recognition.stop();
-            }
-        },
-
-        // Step Navigation
-        nextStep() {
-            if (this.currentStep < this.totalSteps - 1) {
-                this.currentStep++;
-                this.speakStep();
-            } else {
-                this.closeCookMode();
-                // Confetti celebration
-                if (typeof confetti !== 'undefined') {
-                    confetti({
-                        particleCount: 150,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: ['#f9f506', '#eab308', '#22c55e', '#ffffff']
+                // Browser notification
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('⏰ Timer Selesai!', {
+                        body: 'Waktu memasak sudah habis!',
+                        icon: '/favicon.ico'
                     });
                 }
-            }
-        },
 
-        prevStep() {
-            if (this.currentStep > 0) {
-                this.currentStep--;
-                this.speakStep();
-            }
-        },
-
-        goToStep(index) {
-            this.currentStep = index;
-            this.speakStep();
-        },
-
-        toggleStepComplete(index) {
-            const idx = this.completedSteps.indexOf(index);
-            if (idx > -1) {
-                this.completedSteps.splice(idx, 1);
-            } else {
-                this.completedSteps.push(index);
-            }
-        },
-
-        // Modal Controls
-        async openCookMode() {
-            document.getElementById('cookModeModal').classList.remove('hidden');
-            document.getElementById('cookModeModal').classList.add('flex');
-            document.body.style.overflow = 'hidden';
-            // Hide navbar and mobile nav to prevent z-index issues
-            document.querySelector('header')?.classList.add('!hidden');
-            document.querySelector('.fixed.bottom-0')?.classList.add('!hidden');
-            await this.requestWakeLock();
-        },
-
-        closeCookMode() {
-            document.getElementById('cookModeModal').classList.add('hidden');
-            document.getElementById('cookModeModal').classList.remove('flex');
-            document.body.style.overflow = '';
-            // Show navbar and mobile nav again
-            document.querySelector('header')?.classList.remove('!hidden');
-            document.querySelector('.fixed.bottom-0')?.classList.remove('!hidden');
-            this.releaseWakeLock();
-            this.speechSynth?.cancel();
-            if (this.voiceEnabled) {
-                this.recognition?.stop();
-                this.voiceEnabled = false;
-            }
-            clearInterval(this.countdownInterval);
-        },
-
-        // Wake Lock
-        async requestWakeLock() {
-            if ('wakeLock' in navigator) {
-                try {
-                    this.wakeLock = await navigator.wakeLock.request('screen');
-                } catch (err) {
-                    console.log('Wake Lock error:', err);
+                // Vibrate if supported
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([200, 100, 200, 100, 200]);
                 }
-            }
-        },
+            },
 
-        releaseWakeLock() {
-            if (this.wakeLock) {
-                this.wakeLock.release();
-                this.wakeLock = null;
+            dismissAlert() {
+                this.timerAlert = false;
+            },
+
+            // TTS Functions
+            toggleTTS() {
+                this.ttsEnabled = !this.ttsEnabled;
+                if (this.ttsEnabled) {
+                    this.speakStep();
+                    // Request notification permission for timer
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission();
+                    }
+                } else {
+                    this.speechSynth?.cancel();
+                }
+            },
+
+            speakStep() {
+                if (!this.ttsEnabled || !this.speechSynth) return;
+                
+                this.speechSynth.cancel();
+                const utterance = new SpeechSynthesisUtterance(this.steps[this.currentStep]);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.9;
+                this.speechSynth.speak(utterance);
+            },
+
+            // Voice Control Functions
+            initVoiceRecognition() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) return;
+
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = true;
+                this.recognition.interimResults = false;
+                this.recognition.lang = 'id-ID';
+
+                this.recognition.onresult = (event) => {
+                    const last = event.results.length - 1;
+                    const command = event.results[last][0].transcript.toLowerCase().trim();
+                    console.log('Voice command:', command);
+                    this.handleVoiceCommand(command);
+                };
+
+                this.recognition.onerror = (event) => {
+                    console.log('Voice recognition error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        this.voiceEnabled = false;
+                    }
+                };
+
+                this.recognition.onend = () => {
+                    if (this.voiceEnabled) {
+                        this.recognition.start();
+                    }
+                };
+            },
+
+            handleVoiceCommand(command) {
+                if (command.includes('next') || command.includes('selanjutnya') || command.includes('lanjut')) {
+                    this.nextStep();
+                } else if (command.includes('previous') || command.includes('sebelumnya') || command.includes('kembali')) {
+                    this.prevStep();
+                } else if (command.includes('repeat') || command.includes('ulangi') || command.includes('ulang')) {
+                    this.speakStep();
+                } else if (command.includes('selesai') || command.includes('done') || command.includes('complete')) {
+                    this.toggleStepComplete(this.currentStep);
+                }
+            },
+
+            toggleVoiceControl() {
+                if (!this.recognition) {
+                    alert('Browser tidak mendukung Voice Control');
+                    return;
+                }
+
+                this.voiceEnabled = !this.voiceEnabled;
+                if (this.voiceEnabled) {
+                    this.recognition.start();
+                } else {
+                    this.recognition.stop();
+                }
+            },
+
+            // Step Navigation
+            nextStep() {
+                if (this.currentStep < this.totalSteps - 1) {
+                    this.currentStep++;
+                    this.speakStep();
+                } else {
+                    this.closeCookMode();
+                    // Confetti celebration
+                    if (typeof confetti !== 'undefined') {
+                        confetti({
+                            particleCount: 150,
+                            spread: 70,
+                            origin: { y: 0.6 },
+                            colors: ['#f9f506', '#eab308', '#22c55e', '#ffffff']
+                        });
+                    }
+                }
+            },
+
+            prevStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.speakStep();
+                }
+            },
+
+            goToStep(index) {
+                this.currentStep = index;
+                this.speakStep();
+            },
+
+            toggleStepComplete(index) {
+                const idx = this.completedSteps.indexOf(index);
+                if (idx > -1) {
+                    this.completedSteps.splice(idx, 1);
+                } else {
+                    this.completedSteps.push(index);
+                }
+            },
+
+            // Modal Controls
+            async openCookMode() {
+                document.getElementById('cookModeModal').classList.remove('hidden');
+                document.getElementById('cookModeModal').classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                // Hide admin sidebar and navbar to prevent z-index issues
+                document.querySelector('aside')?.classList.add('!hidden');
+                document.querySelector('header')?.classList.add('!hidden');
+                await this.requestWakeLock();
+            },
+
+            closeCookMode() {
+                document.getElementById('cookModeModal').classList.add('hidden');
+                document.getElementById('cookModeModal').classList.remove('flex');
+                document.body.style.overflow = '';
+                // Show admin sidebar and navbar again
+                document.querySelector('aside')?.classList.remove('!hidden');
+                document.querySelector('header')?.classList.remove('!hidden');
+                this.releaseWakeLock();
+                this.speechSynth?.cancel();
+                if (this.voiceEnabled) {
+                    this.recognition?.stop();
+                    this.voiceEnabled = false;
+                }
+                clearInterval(this.countdownInterval);
+            },
+
+            // Wake Lock
+            async requestWakeLock() {
+                if ('wakeLock' in navigator) {
+                    try {
+                        this.wakeLock = await navigator.wakeLock.request('screen');
+                    } catch (err) {
+                        console.log('Wake Lock error:', err);
+                    }
+                }
+            },
+
+            releaseWakeLock() {
+                if (this.wakeLock) {
+                    this.wakeLock.release();
+                    this.wakeLock = null;
+                }
             }
         }
     }
-}
 
-// Global function to open cook mode (called from button outside Alpine scope)
-function openCookMode() {
-    const modal = document.getElementById('cookModeModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
-    // Hide navbar and mobile nav immediately
-    document.querySelector('header')?.classList.add('!hidden');
-    document.querySelector('.fixed.bottom-0')?.classList.add('!hidden');
-    
-    // Trigger Alpine's init
-    const data = Alpine.$data(modal);
-    if (data) {
-        data.openCookMode();
+    // Global function to open cook mode (called from button outside Alpine scope)
+    function openCookMode() {
+        const modal = document.getElementById('cookModeModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        // Hide admin sidebar and navbar immediately
+        document.querySelector('aside')?.classList.add('!hidden');
+        document.querySelector('header')?.classList.add('!hidden');
+        
+        // Trigger Alpine's init
+        const data = Alpine.$data(modal);
+        if (data) {
+            data.openCookMode();
+        }
     }
-}
 
-function closeCookMode() {
-    const modal = document.getElementById('cookModeModal');
-    const data = Alpine.$data(modal);
-    if (data) {
-        data.closeCookMode();
+    function closeCookMode() {
+        const modal = document.getElementById('cookModeModal');
+        const data = Alpine.$data(modal);
+        if (data) {
+            data.closeCookMode();
+        }
     }
-}
 
-// Keyboard Navigation
-document.addEventListener('keydown', function(event) {
-    const modal = document.getElementById('cookModeModal');
-    if (modal.classList.contains('hidden')) return;
-    
-    const data = Alpine.$data(modal);
-    if (!data) return;
-    
-    if (event.key === 'ArrowRight') data.nextStep();
-    if (event.key === 'ArrowLeft') data.prevStep();
-    if (event.key === 'Escape') data.closeCookMode();
-    if (event.key === ' ') {
-        event.preventDefault();
-        data.toggleStepComplete(data.currentStep);
-    }
-});
-</script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-</x-app-layout>
+    // Keyboard Navigation
+    document.addEventListener('keydown', function(event) {
+        const modal = document.getElementById('cookModeModal');
+        if (modal.classList.contains('hidden')) return;
+        
+        const data = Alpine.$data(modal);
+        if (!data) return;
+        
+        if (event.key === 'ArrowRight') data.nextStep();
+        if (event.key === 'ArrowLeft') data.prevStep();
+        if (event.key === 'Escape') data.closeCookMode();
+        if (event.key === ' ') {
+            event.preventDefault();
+            data.toggleStepComplete(data.currentStep);
+        }
+    });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</x-layouts.admin>
